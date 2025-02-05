@@ -4,10 +4,9 @@ import { FontAwesome } from '@expo/vector-icons';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 const Home = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('Today'); // State for active perio
-  // d tab
+  const [selectedPeriod, setSelectedPeriod] = useState('Today'); // State for active period tab
 
-  // State for kcal values for the current day and week
+  // State for kcal values for the current day
   const [breakfastKcal, setBreakfastKcal] = useState(340);
   const [lunchKcal, setLunchKcal] = useState(400);
   const [dinnerKcal, setDinnerKcal] = useState(500);
@@ -17,16 +16,15 @@ const Home = () => {
 
   const [kcalGoal, setKcalGoal] = useState(2000);
 
-  // Sample data for periods
-  const periodData = {
-    Week: { total: 14000, average: 2000 },
-    Month: { total: 60000, average: 2000 },
-    '6 Month': { total: 360000, average: 2000 },
-  };
-
   // Calculate total kcal for the current day
   const totalKcal = breakfastKcal + lunchKcal + dinnerKcal + snacksKcal + dessertsKcal + drinksKcal;
   const progressPercentage = (totalKcal / kcalGoal) * 100;
+
+  // Dynamic calculation for other periods
+  const totalKcalWeek = totalKcal * 7;
+  const totalKcalMonth = totalKcal * 30;
+  const totalKcalSixMonth = totalKcal * 180;
+  const averageKcalPerDay = totalKcal; // Dynamic average is the total Kcal of the day
 
   return (
     <View style={styles.container}>
@@ -50,18 +48,10 @@ const Home = () => {
           {['Today', 'Week', 'Month', '6 Month'].map((period) => (
             <TouchableOpacity
               key={period}
-              style={[
-                styles.periodTab,
-                selectedPeriod === period && styles.activePeriodTab,
-              ]}
+              style={[styles.periodTab, selectedPeriod === period && styles.activePeriodTab]}
               onPress={() => setSelectedPeriod(period)}
             >
-              <Text
-                style={[
-                  styles.periodText,
-                  selectedPeriod === period && styles.activePeriodText,
-                ]}
-              >
+              <Text style={[styles.periodText, selectedPeriod === period && styles.activePeriodText]}>
                 {period}
               </Text>
             </TouchableOpacity>
@@ -90,6 +80,15 @@ const Home = () => {
                   </View>
                 )}
               </AnimatedCircularProgress>
+
+              {/* Calorie Intake Message */}
+              <Text style={styles.calorieStatus}>
+                {totalKcal < 2000
+                  ? 'You need to eat more for bulking.'
+                  : totalKcal === 2000
+                  ? "You're in a normal condition."
+                  : 'You need to cut kcal intake.'}
+              </Text>
             </View>
 
             {/* Meals List */}
@@ -122,12 +121,16 @@ const Home = () => {
           </View>
         )}
 
-        {/* Weekly Summary */}
+        {/* Weekly, Monthly, and 6-Month Summary */}
         {selectedPeriod !== 'Today' && (
           <View style={styles.summaryContainer}>
             <Text style={styles.summaryTitle}>{selectedPeriod} Summary</Text>
-            <Text style={styles.summaryText}>Total Calories: {periodData[selectedPeriod]?.total || 0} Kcal</Text>
-            <Text style={styles.summaryText}>Average Calories per Day: {periodData[selectedPeriod]?.average || 0} Kcal</Text>
+            <Text style={styles.summaryText}>Total Calories: 
+              {selectedPeriod === 'Week' && totalKcalWeek}
+              {selectedPeriod === 'Month' && totalKcalMonth}
+              {selectedPeriod === '6 Month' && totalKcalSixMonth}
+            </Text>
+            <Text style={styles.summaryText}>Average Calories per Day: {averageKcalPerDay}</Text>
           </View>
         )}
       </ScrollView>
@@ -160,20 +163,21 @@ const styles = StyleSheet.create({
   chartCenter: { alignItems: 'center' },
   chartCalories: { fontSize: 32, fontWeight: 'bold', color: '#333' },
   chartLabel: { fontSize: 16, color: '#777' },
+  calorieStatus: { fontSize: 16, fontWeight: 'bold', color: '#333', marginTop: 15, textAlign: 'center' },
 
   // Summary Section
   summaryContainer: { alignItems: 'center', marginTop: 30 },
   summaryTitle: { fontSize: 20, fontWeight: 'bold', color: '#333', marginBottom: 10 },
   summaryText: { fontSize: 16, color: '#555', marginVertical: 5 },
-
+  
   // Meals List
-  mealList: { marginTop: 20 },
-  mealItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15, borderRadius: 10, marginBottom: 10 },
-  mealInfo: { flexDirection: 'row', alignItems: 'center' },
-  mealText: { marginLeft: 10 },
-  mealName: { fontSize: 16, fontWeight: 'bold', color: '#FFF' },
-  kcalInput: { fontSize: 16, fontWeight: 'bold', color: '#FFF', borderBottomWidth: 1, borderBottomColor: '#FFF', minWidth: 50, textAlign: 'center' },
-  mealCalories: { fontSize: 16, fontWeight: 'bold', color: '#FFF' },
+    mealList: { marginTop: 20 },
+    mealItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15, borderRadius: 10, marginBottom: 10 },
+    mealInfo: { flexDirection: 'row', alignItems: 'center' },
+    mealText: { marginLeft: 10 },
+    mealName: { fontSize: 16, fontWeight: 'bold', color: '#FFF' },
+    kcalInput: { fontSize: 16, fontWeight: 'bold', color: '#FFF', borderBottomWidth: 1, borderBottomColor: '#FFF', minWidth: 50, textAlign: 'center' },
+    mealCalories: { fontSize: 16, fontWeight: 'bold', color: '#FFF' },
 });
 
 export default Home;

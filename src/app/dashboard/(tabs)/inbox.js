@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Button, ScrollView, TouchableOpacity, Image } from 'react-native';
 
 const NutritionSuggestions = () => {
   const suggestions = [
@@ -54,7 +54,6 @@ const NutritionSuggestions = () => {
   ];
 
   const [selectedId, setSelectedId] = useState(null);
-
   const handlePress = (id) => {
     setSelectedId(selectedId === id ? null : id);
   };
@@ -85,7 +84,59 @@ const NutritionSuggestions = () => {
           </TouchableOpacity>
         ))}
       </View>
+
+      <Text style={styles.header}>7-Day Meal Plan</Text>
+      <MealPlan />
     </ScrollView>
+  );
+};
+
+const MealPlan = () => {
+  const [planType, setPlanType] = useState('bulking'); // Default plan is bulking
+
+  // Meal plans for Bulking and Cutting
+  const mealPlans = {
+    bulking: [
+      { day: 'Monday', meals: ['Oats with Whey Protein', 'Grilled Chicken with Rice', 'Salmon with Quinoa', 'Peanut Butter Smoothie'] },
+      { day: 'Tuesday', meals: ['Eggs with Avocado Toast', 'Beef Stir-fry with Vegetables', 'Turkey Sandwich', 'Greek Yogurt with Almonds'] },
+      { day: 'Wednesday', meals: ['Smoothie with Banana and Protein', 'Chicken Salad with Olive Oil', 'Pasta with Chicken', 'Cottage Cheese with Berries'] },
+      { day: 'Thursday', meals: ['Egg White Scramble with Spinach', 'Grilled Steak with Sweet Potatoes', 'Chicken Wraps', 'Protein Shake'] },
+      { day: 'Friday', meals: ['Whole Wheat Pancakes with Berries', 'Chicken and Rice Bowl', 'Salmon Salad', 'Nuts and Seeds'] },
+      { day: 'Saturday', meals: ['Egg and Cheese Sandwich', 'Beef Chili with Rice', 'Chicken Quesadilla', 'Protein Bar'] },
+      { day: 'Sunday', meals: ['Smoothie with Oats', 'Chicken with Veggies', 'Grilled Salmon', 'Greek Yogurt with Honey'] },
+    ],
+    cutting: [
+      { day: 'Monday', meals: ['Scrambled Eggs with Spinach', 'Grilled Chicken Salad', 'Grilled Salmon with Veggies', 'Protein Shake'] },
+      { day: 'Tuesday', meals: ['Boiled Eggs', 'Turkey Salad with Olive Oil', 'Chicken and Broccoli', 'Greek Yogurt'] },
+      { day: 'Wednesday', meals: ['Smoothie with Protein', 'Chicken Breast with Zucchini', 'Tuna Salad', 'Almonds'] },
+      { day: 'Thursday', meals: ['Avocado Toast with Eggs', 'Chicken Caesar Salad', 'Grilled Chicken with Asparagus', 'Cottage Cheese'] },
+      { day: 'Friday', meals: ['Omelette with Mushrooms', 'Tuna Salad with Lettuce', 'Chicken and Spinach', 'Protein Bar'] },
+      { day: 'Saturday', meals: ['Egg White Omelette', 'Grilled Fish with Veggies', 'Lean Beef Salad', 'Cucumber with Hummus'] },
+      { day: 'Sunday', meals: ['Protein Smoothie', 'Grilled Turkey with Veggies', 'Salmon with Kale', 'Greek Yogurt with Berries'] },
+    ],
+  };
+
+  // Toggle between Bulking and Cutting meal plan
+  const togglePlan = (plan) => {
+    setPlanType(plan);
+  };
+
+  return (
+    <View style={styles.mealPlan}>
+      <View style={styles.buttonContainer}>
+        <Button title="Bulking Plan" onPress={() => togglePlan('bulking')} />
+        <Button title="Cutting Plan" onPress={() => togglePlan('cutting')} />
+      </View>
+
+      {mealPlans[planType].map((meal, index) => (
+        <View key={index} style={styles.dayContainer}>
+          <Text style={styles.dayText}>{meal.day}</Text>
+          {meal.meals.map((item, i) => (
+            <Text key={i} style={styles.mealText}>{item}</Text>
+          ))}
+        </View>
+      ))}
+    </View>
   );
 };
 
@@ -102,6 +153,11 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 20,
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
   cardGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -111,6 +167,9 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '48%',
     marginBottom: 20,
+    borderRadius: 10,
+    elevation: 5,
+    backgroundColor: '#fff',
   },
   productImage: {
     width: '100%',
@@ -151,6 +210,30 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '600',
     marginLeft: 5,
+  },
+  mealPlan: {
+    marginBottom: 20,
+  },
+  dayContainer: {
+    backgroundColor: '#ffffff',
+    marginBottom: 15,
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  dayText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  mealText: {
+    fontSize: 14,
+    color: '#555',
+    marginVertical: 5,
   },
 });
 
