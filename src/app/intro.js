@@ -42,12 +42,11 @@ const WelcomeScreen = () => {
         {/* Content Section */}
         <View style={styles.content}>
           <Text style={[styles.title, { fontFamily: 'Poppins_700Bold' }]}>
-            Buy Local, Sell Smart – All in Your Campus
+            Track, Burn, and Achieve: Your Personalized Calorie Journey
           </Text>
           <Text style={[styles.description, { fontFamily: 'Poppins_400Regular' }]}>
-            Your go-to app for buying and selling pre-loved items on campus! Support sustainability, save
-            money, and connect with fellow students in a secure, easy-to-use platform. Buy smart, sell fast –
-            all within your campus community.
+            Your go-to app for calculating your calorie intake and miles ran. Offfers Nutrition
+            Suggestions for a better and healthy lifestyle.
           </Text>
         </View>
 

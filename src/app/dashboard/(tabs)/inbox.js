@@ -1,100 +1,157 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Importing MaterialIcons
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 
-const Inbox = () => {
-  const notifications = [
-    { id: '1', name: 'Allyn Kyle Cambaya', message: 'I really want us to work together on the BuyNaBay project. Do you have time?', image: require('../../../../assets/seller1.jpeg') },
-    { id: '2', name: 'Joevel Berana', message: 'I want to join the BuyNaBay project. How do we start?', image: require('../../../../assets/seller2.png') },
-    { id: '3', name: 'Emmanuel Redoble', message: 'Emmanuel, the BuyNaBay project is really interesting. Do you have time to join me?', image: require('../../../../assets/seller3.png') },
-    { id: '4', name: 'John Lloyd Morden', message: 'I’m interested in working on the BuyNaBay project. Can we discuss it?', image: require('../../../../assets/seller4.png') },
-    { id: '5', name: 'Alaiza Rose Olores', message: 'I’m excited to join the BuyNaBay project. What’s your schedule like now?', image: require('../../../../assets/seller5.png') },
-    { id: '6', name: 'Evegen Dela Cruz', message: 'I’m preparing for the BuyNaBay project. Where do we start?', image: require('../../../../assets/seller6.png') },
-    { id: '7', name: 'John Kenneth Pang-an', message: 'Kenneth, andam naba ka maka palit sa imong paborito nga baligya? Visit our store now!', image: require('../../../../assets/seller7.png') },
+const NutritionSuggestions = () => {
+  const suggestions = [
+    {
+      id: 1,
+      title: 'Try Hazelnut Milk',
+      description: 'A great source of healthy fats and vitamin E. Pairs well with breakfast cereals or smoothies.',
+      kcal: 75,
+      color: '#A5DFB2', // Green for fresh
+      image: require('../../../../assets/hazel.png'),
+    },
+    {
+      id: 2,
+      title: 'Consume Peanut Milk Soon',
+      description: 'Rich in protein but nearing expiration. Use in baking or savory dishes to avoid waste.',
+      kcal: 60,
+      color: '#FFA07A', // Orange for nearing expiration
+      image: require('../../../../assets/milk.png'),
+    },
+    {
+      id: 3,
+      title: 'Try Brown Rice',
+      description: 'A whole grain packed with fiber and nutrients. Great as a base for stir-fries or as a side dish.',
+      kcal: 110,
+      color: '#D2B48C', // Tan for rice
+      image: require('../../../../assets/rice.png'),
+    },
+    {
+      id: 4,
+      title: 'Eat Eggs for Protein',
+      description: 'A complete protein source. Versatile for breakfast, salads, or sandwiches.',
+      kcal: 70,
+      color: '#FFD700', // Yellow for eggs
+      image: require('../../../../assets/egg.png'),
+    },
+    {
+      id: 5,
+      title: 'Fresh Fish for Omega-3s',
+      description: 'Rich in omega-3 fatty acids, great for heart health. Enjoy grilled, baked, or in salads.',
+      kcal: 150,
+      color: '#87CEEB', // Blue for fish
+      image: require('../../../../assets/fish.png'),
+    },
+    {
+      id: 6,
+      title: 'Avocado for Healthy Fats',
+      description: 'Packed with monounsaturated fats and vitamins. Perfect for toast, salads, or smoothies.',
+      kcal: 160,
+      color: '#98FB98', // Light green for avocado
+      image: require('../../../../assets/avocado.png'),
+    },
   ];
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Messages</Text>
-        <TouchableOpacity style={styles.iconContainer}>
-          <Icon name="search" size={30} color="#3e7139" />
-        </TouchableOpacity>
-      </View>
+  const [selectedId, setSelectedId] = useState(null);
 
-      <FlatList
-        data={notifications}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.notificationCard}>
-            <View style={styles.headerCard}>
-              <Image source={item.image} style={styles.profileImage} />
-              <Text style={styles.name}>{item.name}</Text>
-            </View>
-            <Text style={styles.message}>{item.message}</Text>
-          </View>
-        )}
-      />
-    </View>
+  const handlePress = (id) => {
+    setSelectedId(selectedId === id ? null : id);
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.header}>Nutrition Suggestions</Text>
+      <View style={styles.cardGrid}>
+        {suggestions.map((suggestion) => (
+          <TouchableOpacity
+            key={suggestion.id}
+            style={styles.cardContainer}
+            onPress={() => handlePress(suggestion.id)}
+          >
+            {/* Product Image */}
+            <Image source={suggestion.image} style={styles.productImage} />
+
+            {/* Description (visible only when pressed) */}
+            {selectedId === suggestion.id && (
+              <View style={[styles.cardOverlay, { backgroundColor: suggestion.color }]}>
+                <Text style={styles.cardTitle}>{suggestion.title}</Text>
+                <Text style={styles.cardDescription}>{suggestion.description}</Text>
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoText}>{suggestion.kcal} kcal</Text>
+                </View>
+              </View>
+            )}
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0D1B2A', // Dark background to match theme
-    padding: 15,
+    backgroundColor: '#F8F9FB',
+    paddingHorizontal: 15,
+    paddingTop: 20,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between', // Align icons and title
-    marginBottom: 20,
-  },
-  iconContainer: {
-    padding: 10,
-  },
-  title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginLeft: 45,
-    color: '#FFFFFF', // White title text for contrast
-    textAlign: 'center',
-    flex: 1, // Make title take up available space between icons
-  },
-  notificationCard: {
-    backgroundColor: '#1F2A3D', // Dark background for notification cards
-    borderRadius: 10,
-    padding: 15,
+    color: '#333',
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    elevation: 5,
-    borderLeftWidth: 5,
-    borderLeftColor: '#3e7139', // Greenish left border for emphasis
   },
-  headerCard: {
+  cardGrid: {
     flexDirection: 'row',
-    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  cardContainer: {
+    position: 'relative',
+    width: '48%',
+    marginBottom: 20,
+  },
+  productImage: {
+    width: '100%',
+    height: 180,
+    borderRadius: 10,
+  },
+  cardOverlay: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    right: 10,
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 5,
+  },
+  cardDescription: {
+    fontSize: 14,
+    color: '#333',
     marginBottom: 10,
   },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20, // Circular image
-    marginRight: 10,
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
   },
-  name: {
-    fontSize: 18,
+  infoText: {
+    fontSize: 14,
+    color: '#000',
     fontWeight: '600',
-    color: '#FF6F00', // Accent color for names
-  },
-  message: {
-    fontSize: 16,
-    color: '#A0A0A0', // Lighter text for message content
-    marginTop: 5,
+    marginLeft: 5,
   },
 });
 
-export default Inbox;
+export default NutritionSuggestions;

@@ -1,118 +1,61 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, ScrollView, Image } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { View, Text, TextInput, StyleSheet, Button, ScrollView, TouchableOpacity } from 'react-native';
 
-const AddPhotoFeature = () => {
-  const [itemName, setItemName] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('');
-  const [address, setAddress] = useState('');
-  const [image, setImage] = useState(null); // State to store the selected image
+const CalorieTracker = () => {
+  const [caloriesIntake, setCaloriesIntake] = useState('');
+  const [milesRan, setMilesRan] = useState('');
+  const [netCalories, setNetCalories] = useState(null);
 
-  // Function to handle photo selection
-  const pickImage = async () => {
-    // Request permission to access media library
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  const CALORIES_BURNED_PER_MILE = 100; // Estimated calories burned per mile
 
-    if (permissionResult.granted) {
-      // Launch the image picker if permission is granted
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 1,
-      });
+  const calculateNetCalories = () => {
+    const intake = parseFloat(caloriesIntake) || 0;
+    const miles = parseFloat(milesRan) || 0;
+    const caloriesBurned = miles * CALORIES_BURNED_PER_MILE;
+    const net = intake - caloriesBurned;
 
-      if (!result.canceled) {
-        setImage(result.assets[0].uri); // Set the image URI to state
-      }
-    } else {
-      alert('Permission to access the media library is required!');
-    }
-  };
-
-  const handleAddItem = () => {
-    // Logic to handle item addition (e.g., send data to a server)
-    console.log({
-      itemName,
-      description,
-      price,
-      category,
-      address,
-      image, // Include the image URI in the submission
-    });
+    setNetCalories(net);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Add Photo</Text>
-
-      {/* Add Photo Button */}
-      <View style={styles.imageContainer}>
-        <Button title="Pick an Image" onPress={pickImage} color="#FF6F00" />
-        {image && (
-          <Image source={{ uri: image }} style={styles.imagePreview} />
-        )}
-      </View>
+      <Text style={styles.header}>Calorie Tracker</Text>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Item Name</Text>
+        <Text style={styles.label}>Calories Intake</Text>
         <TextInput
           style={styles.input}
-          value={itemName}
-          onChangeText={setItemName}
-          placeholder="Enter item name"
-          placeholderTextColor="#A0A0A0"
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Description</Text>
-        <TextInput
-          style={styles.input}
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Enter item description"
-          placeholderTextColor="#A0A0A0"
-          multiline
-          numberOfLines={4}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Price</Text>
-        <TextInput
-          style={styles.input}
-          value={price}
-          onChangeText={setPrice}
-          placeholder="Enter item price"
-          placeholderTextColor="#A0A0A0"
+          value={caloriesIntake}
+          onChangeText={setCaloriesIntake}
+          placeholder="Enter calories consumed"
+          placeholderTextColor="#D0D0D0"
           keyboardType="numeric"
         />
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Category</Text>
+        <Text style={styles.label}>Miles Ran</Text>
         <TextInput
           style={styles.input}
-          value={category}
-          onChangeText={setCategory}
-          placeholder="Enter item category"
-          placeholderTextColor="#A0A0A0"
+          value={milesRan}
+          onChangeText={setMilesRan}
+          placeholder="Enter miles ran"
+          placeholderTextColor="#D0D0D0"
+          keyboardType="numeric"
         />
       </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          value={address}
-          onChangeText={setAddress}
-          placeholder="Enter item location"
-          placeholderTextColor="#A0A0A0"
-        />
-      </View>
+      <TouchableOpacity style={styles.button} onPress={calculateNetCalories}>
+        <Text style={styles.buttonText}>Calculate Net Calories</Text>
+      </TouchableOpacity>
 
-      <Button title="Add Item" onPress={handleAddItem} color="#FF6F00" />
+      {netCalories !== null && (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>
+            Net Calories: {netCalories} kcal
+          </Text>
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -121,42 +64,54 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#0D1B2A', // Background color aligning with the theme
+    backgroundColor: '#2E3B4E',
   },
   header: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#FF6F00', // Accent color for headings
-    marginBottom: 20,
+    color: '#FF8A00',
+    marginBottom: 30,
     textAlign: 'center',
-  },
-  imageContainer: {
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  imagePreview: {
-    width: 200,
-    height: 200,
-    marginTop: 10,
-    borderRadius: 10,
-    borderColor: '#FF6F00',
-    borderWidth: 2,
+    letterSpacing: 1.5,
   },
   inputContainer: {
-    marginBottom: 15,
+    marginBottom: 20,
   },
   label: {
-    color: '#A0A0A0',
-    fontSize: 14,
+    color: '#D0D0D0',
+    fontSize: 16,
     marginBottom: 5,
   },
   input: {
-    backgroundColor: '#1F2A3D', // Slightly darker background for input fields
-    color: '#FFFFFF', // Text color for the input fields
-    padding: 10,
-    borderRadius: 5,
-    fontSize: 16,
+    backgroundColor: '#3B4A61',
+    color: '#FFFFFF',
+    padding: 12,
+    borderRadius: 8,
+    fontSize: 18,
+  },
+  button: {
+    backgroundColor: '#FF8A00',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  resultContainer: {
+    marginTop: 30,
+    padding: 15,
+    backgroundColor: '#3B4A61',
+    borderRadius: 8,
+  },
+  resultText: {
+    fontSize: 22,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
 });
 
-export default AddPhotoFeature;
+export default CalorieTracker;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
-import { Ionicons } from '@expo/vector-icons';
 
 const DashboardLayout = () => {
   return (
@@ -36,7 +35,7 @@ const DashboardLayout = () => {
       <Tabs.Screen
         name="add"
         options={{
-          title: 'Add',
+          title: 'Tracker',
           tabBarIcon: ({ focused }) => (
             <Icon name="plus" size={30} color={focused ? '#FFFFFF' : '#000'} /> // Change icon color to white when active
           ),
@@ -45,9 +44,18 @@ const DashboardLayout = () => {
       <Tabs.Screen
         name="inbox"
         options={{
-          title: 'Inbox',
+          title: 'Suggestion',
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? 'envelope' : 'envelope-o'} size={20} color={focused ? '#FFFFFF' : '#000'} /> // Change icon color to white when active
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="prof"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? 'user' : 'user-o'} size={20} color={focused ? '#FFFFFF' : '#000'} /> // Profile icon with different states
           ),
         }}
       />
